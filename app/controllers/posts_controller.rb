@@ -1,5 +1,4 @@
 class PostsController < ApplicationController
-  # before_actionにauthenticate_userメソッドを指定してください
   before_action :authenticate_user
 
   def index
@@ -8,6 +7,7 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find_by(id: params[:id])
+    @user = @post.user
   end
 
   def new
@@ -15,7 +15,10 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(content: params[:content])
+    @post = Post.new(
+      content: params[:content],
+      user_id: @current_user.id
+    )
     if @post.save
       flash[:notice] = "投稿を作成しました"
       redirect_to("/posts/index")
